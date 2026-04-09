@@ -1,0 +1,14 @@
+services:
+  db:
+    build: 
+      context : ./app/backend/DB
+      dockerfile : Dockerfile
+      args: 
+        KAGGLE_USERNAME: ${KAGGLE_USERNAME}
+        KAGGLE_API_TOKEN: ${KAGGLE_API_TOKEN}
+    ports:
+      - "5432:5432"
+    environment: 
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
