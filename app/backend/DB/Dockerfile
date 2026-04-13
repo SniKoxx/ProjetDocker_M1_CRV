@@ -23,7 +23,7 @@ RUN unzip /app/data/tmdb-movies-dataset-2023-930k-movies.zip -d /app/data
 FROM postgres:18.3
 
 # Copier les données et scripts depuis l'étape précédente
-COPY --from=dataset /app/data /docker-entrypoint-initdb.d/
+COPY --from=dataset /app/data/TMDB_movie_dataset_v11.csv /docker-entrypoint-initdb.d/
 COPY ./init.sql /docker-entrypoint-initdb.d/
 
 EXPOSE 5432

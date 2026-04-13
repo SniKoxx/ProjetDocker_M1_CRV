@@ -58,6 +58,7 @@ SET
     spoken_languages     = NULLIF(spoken_languages, ''),
     keywords             = NULLIF(keywords, '');
 
+DROP TABLE IF EXISTS films;
 -- Création de la table finale
 CREATE TABLE films (
     id                   BIGINT PRIMARY KEY,
@@ -100,3 +101,9 @@ ORDER BY id;
 
 -- Suppression de la table temporaire
 DROP TABLE films_staging;
+
+CREATE EXTENSION IF NOT EXISTS pg_trgm;
+
+CREATE INDEX idx_films_title_trgm
+ON films
+USING gin (title gin_trgm_ops);
