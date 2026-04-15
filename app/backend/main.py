@@ -10,7 +10,7 @@ app = FastAPI()
 # Autorisation de communiquer entre le backend frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], 
+    allow_origins=["http://localhost:3000"],  
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -27,7 +27,7 @@ def root():
 
 @app.get("/films")
 def get_all_films():
-    limit = 50
+    limit = 100
 
     #Affiche 50 films sur la page d'accueil
     with engine.connect() as connection:
