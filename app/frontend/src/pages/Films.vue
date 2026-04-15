@@ -1,8 +1,14 @@
 <template>
-  <div>
-    <SearchBar @search="searchMovies" />
+  <div class="container py-3">
 
+    <!-- SEARCH -->
+    <div class="mb-3">
+      <SearchBar @search="searchMovies" />
+    </div>
+
+    <!-- MOVIES -->
     <MovieList :movies="movies" />
+
   </div>
 </template>
 
@@ -20,8 +26,9 @@ const load = async () => {
 }
 
 const searchMovies = async (query) => {
-  if (!query) return load()
-
+  if (!query) {
+    return load();
+  }
   const res = await fetch(`${API}/search/${query}`)
   movies.value = await res.json()
 }
