@@ -19,6 +19,7 @@
 </template>
 
 <script setup>
+import { API } from '../main.js'
 import { ref, onMounted, computed } from 'vue'
 import SearchBar from '../components/SearchBar.vue'
 import MovieList from '../components/MovieList.vue'

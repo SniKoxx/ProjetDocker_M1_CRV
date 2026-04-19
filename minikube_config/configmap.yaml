@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-config
+data:
+  default.conf: |
+    server {
+        listen 80;
+
+        # Tout les requêtes qui dirige vers /api/ vont vers le backend
+        location /api/ {
+            proxy_pass http://backend:8000/;
+            proxy_set_header Host $host;
+        }
+
+        location / {
+            root /usr/share/nginx/html;
+            try_files $uri $uri/ /index.html;
+        }
+    }
