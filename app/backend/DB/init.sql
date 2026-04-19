@@ -1,4 +1,4 @@
--- Table temporaire pour absorber tous les doublons et les données brutes
+-- Table temporaire afin de ne pas avoir d'erreur pendant l'importation
 CREATE TEMP TABLE films_staging (
     id BIGINT,
     title TEXT,
@@ -26,7 +26,7 @@ CREATE TEMP TABLE films_staging (
     keywords TEXT
 );
 
--- Import brut du CSV dans la table staging
+-- Importation des données du CSV dans la table
 COPY films_staging(
     id, title, vote_average, vote_count, status, release_date,
     revenue, runtime, adult, backdrop_path, budget, homepage,
@@ -104,6 +104,7 @@ DROP TABLE films_staging;
 
 CREATE EXTENSION IF NOT EXISTS pg_trgm;
 
+-- Création d'un index afin de pouvoir mieux gérer la recherche de films
 CREATE INDEX idx_films_title_trgm
 ON films
 USING gin (title gin_trgm_ops);
