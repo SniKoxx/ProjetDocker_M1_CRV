@@ -3,7 +3,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import create_engine, text
 from fastapi.responses import RedirectResponse
-
+import math
 # Initialisation de l'application FastAPI
 app = FastAPI()
 
@@ -26,16 +26,19 @@ def root():
     return RedirectResponse(url="/films")
 
 @app.get("/films")
-def get_all_films():
-    limit = 100
+def get_all_films(page: int = 1):
+    limit = 104
+    offset = (page - 1) * limit # Les i * limit films sont ignorés lorsqu'on regarde la i-ème page
 
-    #Affiche 50 films sur la page d'accueil
     with engine.connect() as connection:
-        result = connection.execute(
-            text("SELECT * FROM films WHERE adult IS DISTINCT FROM true and poster_path IS NOT NULL ORDER BY RANDOM() LIMIT :limit"),
-            {"limit": limit}
-        )
-        return [dict(row._mapping) for row in result]
+        # Recupère le nombre de film
+        total = connection.execute(text("SELECT COUNT(*) FROM films WHERE adult IS DISTINCT FROM true AND poster_path IS NOT NULL")).scalar() 
+
+        result = connection.execute(text("SELECT * FROM films WHERE adult IS DISTINCT FROM true AND poster_path IS NOT NULL LIMIT :limit OFFSET :offset"),
+            {"limit": limit, "offset": offset})
+
+        return {"films": [dict(row._mapping) for row in result], "total": total, "page": page, "pages": math.ceil(total / limit)}
+
 
 @app.get("/films/{film_id}")
 def get_film_by_id(film_id: int):
@@ -50,14 +53,19 @@ def get_film_by_id(film_id: int):
             raise HTTPException(status_code=404, detail="Film non trouvé")
             
         return dict(film._mapping)
-
-@app.get("/search/{titre}")
-def search_films(titre: str):
     
-    #Recherche des films comportant le mot dans son titre
+@app.get("/search/{titre}")
+def search_films(titre: str, page: int = 1):
+    limit = 100
+    offset = (page - 1) * limit
+
     with engine.connect() as connection:
-        # ILIKE permet de chercher sans prendre en compte la majuscule/minuscule
-        query = text("SELECT * FROM films WHERE title ILIKE :recherche and adult IS DISTINCT FROM true and poster_path IS NOT NULL")
-        # Cherche dans tout les titres si il comporte le mot {titre}
-        result = connection.execute(query, {"recherche": f"%{titre}%"})
-        return [dict(row._mapping) for row in result]
+        total = connection.execute(text("SELECT COUNT(*) FROM films WHERE title ILIKE :recherche AND adult IS DISTINCT FROM true AND poster_path IS NOT NULL"),
+            {"recherche": f"%{titre}%"}).scalar()
+
+        result = connection.execute(text("""SELECT * FROM films WHERE title ILIKE :recherche AND adult IS DISTINCT FROM true AND poster_path IS NOT NULL LIMIT :limit OFFSET :offset"""),
+            {"recherche": f"%{titre}%", "limit": limit, "offset": offset}
+        )
+
+        return {"films": [dict(row._mapping) for row in result], "total": total, "page": page, "pages": math.ceil(total / limit)
+        }
