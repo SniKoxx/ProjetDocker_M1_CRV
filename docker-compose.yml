@@ -17,7 +17,6 @@ services:
       - postgres_data:/var/lib/postgresql
     networks:
       - film-net
-    restart: always
 
   backend:
     container_name: backend
@@ -29,12 +28,11 @@ services:
     depends_on:
       - db
     environment:
-      DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@db:5432/${POSTGRES_DB}
+      DATABASE_URL: ${DATABASE_URL}
     volumes:
       - ./app/backend:/app
     networks:
       - film-net
-    restart: always
 
   frontend:
     container_name: frontend
@@ -47,7 +45,6 @@ services:
       - backend
     networks:
       - film-net
-    restart: always
 
 networks :
   film-net:
