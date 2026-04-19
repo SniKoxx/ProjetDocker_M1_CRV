@@ -48,7 +48,7 @@ const router = useRouter()
 const film = ref(null)
 const loading = ref(true)
 
-const API = 'http://localhost:8000'
+import {API} from "../main.js"
 
 const splitField = (val) => {
   if (!val){
