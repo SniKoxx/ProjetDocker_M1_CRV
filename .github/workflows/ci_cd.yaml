@@ -1,0 +1,82 @@
+name: CI/CD
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build les images docker
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Récupère tout les fichiers contenu dans le dépot git
+        uses: actions/checkout@v4
+
+      - name: Création du fichier .env pour pouvoir lancer build sans problèmes
+        run: |
+          echo "KAGGLE_USERNAME=${{ secrets.KAGGLE_USERNAME }}" >> .env
+          echo "KAGGLE_API_TOKEN=${{ secrets.KAGGLE_API_TOKEN }}" >> .env
+          echo "POSTGRES_USER=test" >> .env
+          echo "POSTGRES_PASSWORD=test" >> .env
+          echo "POSTGRES_DB=testdb" >> .env
+          echo "DATABASE_URL=postgresql://test:test@db:5432/testdb" >> .env
+
+      - name: Build via docker-compose
+        run: docker compose build
+
+
+  deploy:
+    name: Deploiement sur Minikube
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Récupère tout les fichiers contenu dans le dépot git
+        uses: actions/checkout@v4
+
+      - name: Demarrage de Minikube
+        uses: medyagh/setup-minikube@v1.38.1
+        with:
+          driver: docker
+
+      - name: Creation du fichier .env
+        run: |
+          echo "KAGGLE_USERNAME=${{ secrets.KAGGLE_USERNAME }}" >> .env
+          echo "KAGGLE_API_TOKEN=${{ secrets.KAGGLE_API_TOKEN }}" >> .env
+          echo "POSTGRES_USER=test" >> .env
+          echo "POSTGRES_PASSWORD=test" >> .env
+          echo "POSTGRES_DB=testdb" >> .env
+          echo "DATABASE_URL=postgresql://test:test@db:5432/testdb" >> .env
+
+      - name: Build des images dans Minikube
+        run: |
+          eval $(minikube docker-env)
+          docker compose build
+
+      - name: Creation d'un Secret Kubernetes
+        run: |
+          kubectl delete secret variable || true
+          kubectl create secret generic variable --from-env-file=.env
+        
+
+      - name: Deploiement des configurations 
+        run: |
+          kubectl apply -f minikube_config/configmap.yaml
+          kubectl apply -f minikube_config/db.yaml
+          kubectl apply -f minikube_config/backend.yaml
+          kubectl apply -f minikube_config/frontend.yaml
+          kubectl apply -f minikube_config/ingress.yaml
+
+      - name: Attente des pods
+        run: |
+          # On ne va pas vérifier la db car elle a besoin du API_TOKENS qui n'est pas présent dans le .env pour tester
+          kubectl wait --for=condition=ready pod -l app=backend --timeout=120s
+          kubectl wait --for=condition=ready pod -l app=frontend --timeout=120s
+
+      - name: Verification finale
+        run: kubectl get pods
