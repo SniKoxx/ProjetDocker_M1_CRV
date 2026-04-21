@@ -40,7 +40,7 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Demarrage de Minikube
-        uses: medyagh/setup-minikube@v1.38.1
+        uses: medyagh/setup-minikube@v0.0.21
         with:
           driver: docker
 
@@ -74,7 +74,7 @@ jobs:
 
       - name: Attente des pods
         run: |
-          # On ne va pas vérifier la db car elle a besoin du API_TOKENS qui n'est pas présent dans le .env pour tester
+          # On ne va pas vérifier la db car elle a besoin du API_TOKENS qui n'est pas présent dans le .env pour tester.
           kubectl wait --for=condition=ready pod -l app=backend --timeout=120s
           kubectl wait --for=condition=ready pod -l app=frontend --timeout=120s
 
