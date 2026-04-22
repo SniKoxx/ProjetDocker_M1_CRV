@@ -3,10 +3,10 @@ name: CI/CD
 on:
   push:
     branches:
-      - main
+      - "*"
   pull_request:
     branches:
-      - main
+      - "*"
 
 jobs:
   build:
@@ -19,8 +19,6 @@ jobs:
 
       - name: Création du fichier .env pour pouvoir lancer build sans problèmes
         run: |
-          echo "KAGGLE_USERNAME=${{ secrets.KAGGLE_USERNAME }}" >> .env
-          echo "KAGGLE_API_TOKEN=${{ secrets.KAGGLE_API_TOKEN }}" >> .env
           echo "POSTGRES_USER=test" >> .env
           echo "POSTGRES_PASSWORD=test" >> .env
           echo "POSTGRES_DB=testdb" >> .env
@@ -46,8 +44,6 @@ jobs:
 
       - name: Creation du fichier .env
         run: |
-          echo "KAGGLE_USERNAME=${{ secrets.KAGGLE_USERNAME }}" >> .env
-          echo "KAGGLE_API_TOKEN=${{ secrets.KAGGLE_API_TOKEN }}" >> .env
           echo "POSTGRES_USER=test" >> .env
           echo "POSTGRES_PASSWORD=test" >> .env
           echo "POSTGRES_DB=testdb" >> .env
