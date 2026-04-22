@@ -4,9 +4,6 @@ services:
     build:
       context: ./app/backend/DB
       dockerfile: Dockerfile
-      args:
-        KAGGLE_USERNAME: ${KAGGLE_USERNAME}
-        KAGGLE_API_TOKEN: ${KAGGLE_API_TOKEN}
     ports:
       - "5432:5432"
     environment:
