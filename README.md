@@ -1,5 +1,5 @@
 # Projet Conteneurisation 
-Ce projet a pour but de crée une application web de catalogue de films avec Docker et Kubernetes. Il est composée d’un frontend, d’un backend et d’une base de données.
+Ce projet a pour but de créer une application web de catalogue de films avec Docker et Kubernetes. Il est composé d’un frontend, d’un backend et d’une base de données.
  
 ## Prérequis
 - Docker
