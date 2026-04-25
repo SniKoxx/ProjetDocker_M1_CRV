@@ -18,7 +18,7 @@ DATABASE_URL=postgresql://user:password@db:5432/liste_movies
 ```
 
 ## Lancement
- 
+Il se peut qu'après le lancement, la DB ne soit pas encore actif, il faudra attendre alors 30sec à 1 minute et refresh la page.
 **Linux**
 ```bash
 chmod +x run_linux.sh
