@@ -15,7 +15,7 @@ jobs:
 
     steps:
       - name: Récupère tout les fichiers contenu dans le dépot git
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Création du fichier .env pour pouvoir lancer build sans problèmes
         run: |
