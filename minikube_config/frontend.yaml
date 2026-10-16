@@ -26,7 +26,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: projetdocker_m1_crv-frontend:latest
+          image: projet_conteneurisation_huang_lin_harraoui-frontend:latest
           imagePullPolicy: Never
           ports:
             - containerPort: 80

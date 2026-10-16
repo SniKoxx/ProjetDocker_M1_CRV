@@ -25,7 +25,7 @@ spec:
     spec:
       containers:
         - name: db
-          image: projetdocker_m1_crv-db:latest
+          image: projet_conteneurisation_huang_lin_harraoui-db:latest
           imagePullPolicy: Never
           ports:
             - containerPort: 5432

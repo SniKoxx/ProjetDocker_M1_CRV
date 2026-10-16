@@ -49,11 +49,13 @@ jobs:
           echo "POSTGRES_DB=testdb" >> .env
           echo "DATABASE_URL=postgresql://test:test@db:5432/testdb" >> .env
 
-      - name: Build des images dans Minikube
+      - name: Chargement des images dans Minikube
         run: |
-          eval $(minikube docker-env)
-          docker compose build
-
+          minikube image load projet_conteneurisation_huang_lin_harraoui-db:latest
+          minikube image load projet_conteneurisation_huang_lin_harraoui-backend:latest
+          minikube image load projet_conteneurisation_huang_lin_harraoui-frontend:latest
+          minikube image ls
+        
       - name: Creation d'un Secret Kubernetes
         run: |
           kubectl delete secret variable || true

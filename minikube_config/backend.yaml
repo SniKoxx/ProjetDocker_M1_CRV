@@ -24,7 +24,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: projetdocker_m1_crv-backend:latest
+          image: projet_conteneurisation_huang_lin_harraoui-backend:latest
           imagePullPolicy: Never
           ports:
             - containerPort: 8000
