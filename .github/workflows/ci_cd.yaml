@@ -49,6 +49,9 @@ jobs:
           echo "POSTGRES_DB=testdb" >> .env
           echo "DATABASE_URL=postgresql://test:test@db:5432/testdb" >> .env
 
+      - name: Build des images
+        run: docker compose build
+      
       - name: Chargement des images dans Minikube
         run: |
           minikube image load projet_conteneurisation_huang_lin_harraoui-db:latest
