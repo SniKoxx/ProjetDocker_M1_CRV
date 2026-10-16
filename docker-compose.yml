@@ -1,5 +1,6 @@
 services:
   db:
+    image: projet_conteneurisation_huang_lin_harraoui-db:latest
     container_name: db
     build:
       context: ./app/backend/DB
@@ -16,6 +17,7 @@ services:
       - film-net
 
   backend:
+    image: projet_conteneurisation_huang_lin_harraoui-backend:latest
     container_name: backend
     build:
       context: ./app/backend
@@ -32,6 +34,7 @@ services:
       - film-net
 
   frontend:
+    image: projet_conteneurisation_huang_lin_harraoui-frontend:latest
     container_name: frontend
     build:
       context: ./app/frontend
